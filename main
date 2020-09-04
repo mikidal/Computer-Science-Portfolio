@@ -1,0 +1,102 @@
+# Developing classes and objects that represent the various responsibilities of art dealership software
+# steps operativi
+#1 creiamo una classe che contengga i riferimento dell'opera (Class ART) e diamo un metodo per rappresentarla (repr method). nella classe inseriamo che un  riferimento al potenziale owner e alla location dell'owner
+#2 creiamo il marketplace (Class marketplace) che contenga in riferimenti per l'acquisto, la vendita, il listing e il delisting delle opere
+#3 in Marketplace avremo self.listing come nuova lista [],add.listing method che aggiunge nuove listing a listing Marketplace, remove_listing che fa l'opposto, show_listing che va attraverso tutte le listing in marketplace e le printa
+#4 creiamo la base clienti (Class Client) che identifichiamo come Nome, location (se è Museo) o collezionista privato
+#5 creiamo una classe dove listiamo le opere oggetto di compravendita (Classe Listing), definita dal nome dell'opera, dal prezzo e dal seller, e diamogli una rappresentazione (repr method) con nome di opera e prezzo
+#6 aggiorniamo la classe Client aggiungendo nuovo metodo per la vendita delle  opere (sell_artwork) che considera due parametri, l'opera venduta e il suo prezzo. Il metodo a) guarda se l'owner dell'opera ha effettivamente l'opera; b) crea una nuova listing con  nome, prezzo e cliente; 3) la aggiunge al marketplace
+#7 aggiorniamo nuovamente la classe Client aggiunngendo un nuovo metodo per la vendita delle opere (buy_artwork) che considera un parametro, l'opera da acquisire. Il metodo a) verifica che l'opera non sia posseduta già dall'acquirente; 2) verifica che l'opera sia in vendita/sia presente nel marketplace ;3) se ok, allora va avanti con la transazione cambiando artwork.owner con i riferimenti del client (self) e rimuove la listing dal marketplace
+
+
+class Art:
+    def __init__(self, artist, title, medium, year, owner):
+        self.artist = artist
+        self.title = title
+        self.medium = medium
+        self.year = year
+        self.owner = owner
+
+    def __repr__(self):
+        return '%s, %s. %s, %s. %s, %s.' % (
+            self.artist, self.title, self.medium, self.year, self.owner.name,
+            self.owner.location)  # utilizzo % al posto della stringa
+
+
+# creation of a marketplace that will maintain the responsibilities of buying, selling, listing, and delisting of those artworks
+class Marketplace:
+    def __init__(self):
+        self.listings = []
+
+    def add_listing(self, new_listing):
+        self.new_listing = new_listing
+        self.listings.append(new_listing)
+
+    def remove_listing(self, removed_listing):
+        self - listings.remove(removed_listing)
+
+    # The main usage of our application will be the perusal of a marketplace’s listings. Let’s include that functionality as well
+    def show_listings(self):
+        for listing in self.listings:
+            print(listing)
+
+
+# creation of a client base
+class Client:
+    def __init__(self, name, location, is_museum):
+        self.name = name  # name of person or institution
+        self.is_museum = is_museum  # boolean. Client is a museum (T) or a collector (F)
+        if is_museum:
+            self.location = location
+        else:
+            self.location = 'Private Collector'  #name of location of the museum if museum / private collector if client is a collector
+
+    def sell_artwork(self, artwork, price):
+        if artwork.owner == self:  # metto self perchè sono già nella classe Client
+            new_listing = Listing(artwork, price, self)
+            veneer.add_listing(new_listing)
+
+    def buy_artwork(self, artwork):
+        if artwork.owner != self:
+            art_listing = None
+            for listing in veneer.listings:
+                if listing.art == artwork:
+                    art_listing = listing
+                    break
+                if art_listing != None:
+                    art_listing.art.owner = self
+                    veneer.remove_listing(art_listing)
+
+
+# creation  of listings class:
+class Listing:
+    def __init__(self, art, price, seller):
+        self.art = art
+        self.price = price
+        self.seller = seller
+
+    def __repr__(self):
+        return '%s, %s.' % (self.art.title, self.price)
+
+
+#creation of the Marketplace and saving to variable veneer
+veneer = Marketplace()
+
+#initiation of first client and second clients.
+edytta = Client('Edytta Halpirt', None, False)
+moma = Client('The MOMA', 'New York', True)
+
+girl_with_mandolin = Art('Picasso, Pablo',
+                         'Girl with a Mandolin (Fanny Tellier)', 1910,
+                         'oil on canvas', edytta)
+
+print(girl_with_mandolin)
+
+edytta.sell_artwork(girl_with_mandolin, '$6M (USD)')
+
+veneer.show_listings()
+
+veneer.show_listings()
+
+moma.buy_artwork(girl_with_mandolin)
+print(girl_with_mandolin)
